@@ -334,9 +334,23 @@ elif [ -f "/usr/bin/python3.8" ]; then
   sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
   echo "python calls python3.8"
 else
-  echo "# FAIL #"
-  echo "There is no tested version of python present"
-  exit 1
+  # try to build Python 3.10 from source
+  curl https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tar.xz --output /tmp/python-3.10.8.tar.xz
+  tar -xf /tmp/python-3.10.8.tar.xz /tmp/python-3.10.8
+  /tmp/python-3.10.8/configure --enable optimizations
+  make -j $(nproc) -C /tmp/python-3.10.8
+  make altinstall -C /tmp/python-3.10.8
+  #test if build from source was successful
+  if [ -f "/usr/bin/python3.10" ]; then
+    # use python 3.10 if available
+    sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+    sudo ln -s /usr/bin/python3.10 /usr/bin/python3.9
+    echo "python calls python3.10"
+  else
+    echo "# FAIL #"
+    echo "There is no tested version of python present"
+    exit 1
+  fi
 fi
 
 echo -e "\n*** PREPARE ${baseimage} ***"
