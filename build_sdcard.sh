@@ -344,7 +344,8 @@ else
   if [ -f "/usr/bin/python3.10" ]; then
     # use python 3.10 if available
     sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
-    sudo ln -s /usr/bin/python3.10 /usr/bin/python3.9
+    sudo ln -s /usr/bin/python3.10 /usr/bin/python3
+    sudo ln -s /usr/share/pyshared/lsb_release.py /usr/local/lib/python3.10/site-packages/lsb_release.py
     echo "python calls python3.10"
   else
     echo "# FAIL #"
